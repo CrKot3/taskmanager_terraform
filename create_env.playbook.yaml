@@ -27,7 +27,7 @@
         host: "{{ trfrm.outputs.servers.value.tg_server }}"
         port: 22
 
-- hosts: db_server
+- hosts: task_manager_server
   name: Start mysql server
   become: yes
   tasks:
