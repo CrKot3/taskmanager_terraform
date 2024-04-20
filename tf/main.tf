@@ -14,7 +14,7 @@ provider "openstack" {
   tenant_name = "students"
   user_domain_name = "Default"
   user_name = "master2022"
-  password = {$PASS}
+  password = ${PASS}
   region = "RegionOne"
 }
 
