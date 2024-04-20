@@ -7,7 +7,7 @@ variable "flavor_name" {
 }
 
 variable "key_pair" {
-  default = "fedotov-keypair"
+  default = "chalkov-keypair"
 }
 
 variable "security_group" {
