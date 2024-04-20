@@ -8,17 +8,13 @@ terraform {
   }
 }
 
-data "local_file" "pass" {
-  filename = "$/home/ubuntu/mypass"
-}
-
 provider "openstack" {
   auth_url = "https://cloud.crplab.ru:5000"
   tenant_id = "a02aed7892fa45d0bc2bef3b8a08a6e9"
   tenant_name = "students"
   user_domain_name = "Default"
   user_name = "master2022"
-  password = data.local_file.pass.content
+  password = var.passwd
   region = "RegionOne"
 }
 
