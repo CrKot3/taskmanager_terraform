@@ -116,7 +116,7 @@
       - name: Start Java app service
         systemd:
           daemon_reload: true
-          name: chalkov_bot.service
+          name: chalkov_bot
           state: restarted
         become: yes
      
