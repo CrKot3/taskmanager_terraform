@@ -8,21 +8,12 @@ terraform {
   }
 }
 
-provider "vault" {
-}
-
-data "vault_generic_secret" "openstack" {
-  path = "secret/openstack"
-}
-
 provider "openstack" {
-  auth_url = data.vault_generic_secret.openstack.data["url"]  
-  tenant_id = data.vault_generic_secret.openstack.data["id"]
-  tenant_name = data.vault_generic_secret.openstack.data["name"]
-  user_domain_name = data.vault_generic_secret.openstack.data["domain"]
-  user_name = data.vault_generic_secret.openstack.data["uname"]
-  password = data.vault_generic_secret.openstack.data["password"]
-  region = data.vault_generic_secret.openstack.data["region"]
+  auth_url = "https://cloud.crplab.ru:5000"
+  user_domain_name = "Default"
+  user_name = "master2022"
+  password = $PASS
+  region = "RegionOne"
 }
 
 resource "openstack_networking_secgroup_v2" "sg" {
