@@ -94,10 +94,10 @@
   hosts: task_manager_server
   tasks:
     - block:   
-      - name: Update apt cache and install jdk17
+      - name: Update apt cache and install jdk18
         apt:
           update_cache: yes
-          name: openjdk-17-jdk-headless
+          name: openjdk-18-jdk-headless
           state: present
         become: yes
 
