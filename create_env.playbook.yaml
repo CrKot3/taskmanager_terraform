@@ -87,7 +87,7 @@
         name: tmpdb
         state: import
         login_unix_socket: /var/run/mysqld/mysqld.sock
-        target: /home/ubuntu/DB.sql
+        target: /home/ubuntu/BD.sql
 
       
 - name: Deploy app
