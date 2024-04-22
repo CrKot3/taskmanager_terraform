@@ -19,7 +19,7 @@ provider "openstack" {
 }
 
 resource "openstack_networking_secgroup_v2" "sg" {
-  name        = "task_manager_sg"
+  name        = "task_manager_sg2"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "sg_ssh_rule" {
@@ -43,7 +43,7 @@ resource "openstack_networking_secgroup_rule_v2" "sg_sql_rule" {
 }
 
 resource "openstack_compute_instance_v2" "task_manager_tg" {
-  name        = "task_manager_tg"
+  name        = "task_manager_tg2"
   image_name  = var.image_name
   flavor_name = var.flavor_name
   key_pair = var.key_pair
