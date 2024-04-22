@@ -28,98 +28,88 @@
         port: 22
 
 - hosts: task_manager_server
-  name: Start mysql server
+  name: Docker
   become: yes
   tasks:
-    - name: Update apt package cache
-      apt:
-        update_cache: yes
-
-    - name: Install MySQL server
-      apt:
-        name: mysql-server-8.0
-        state: present
-
-    - name: Install python3-pip
-      apt:
-        name: python3-pip
-        state: present
-
-    - name: Install PyMySQL using pip
-      pip:
-        name: pymysql
-        state: present
-        executable: pip3
-
-    - name: Change server configuration
-      ansible.builtin.lineinfile:
-        path: /etc/mysql/mysql.conf.d/mysqld.cnf
-        regexp: "^bind-address"
-        line: "bind-address = 0.0.0.0"
-
-    - name: Start MySQL service
-      service:
-        name: mysql
-        state: restarted
-        enabled: yes
-
-    - name: Install net-tools
-      apt:
-        name: net-tools
-        state: present
-
-    - name: Add user
-      mysql_user:
-        name: "finley"
-        password: "password"
-        priv: "tmpdb.*:ALL"
-        host: "%"  # Разрешить подключение с любого хоста
-        state: present
-        login_unix_socket: /run/mysqld/mysqld.sock
-
-    - name: Copy sql import script
-      copy:
-        src: "{{ sql_path  }}"
-        dest: /home/ubuntu
-
-    - name: Import database dump
-      mysql_db:
-        name: tmpdb
-        state: import
-        login_unix_socket: /var/run/mysqld/mysqld.sock
-        target: /home/ubuntu/BD.sql
-
-      
-- name: Deploy app
-  hosts: task_manager_server
-  tasks:
     - block:   
-      - name: Update apt cache and install jdk18
+      - name: Update apt cache
         apt:
           update_cache: yes
-          name: openjdk-18-jdk-headless
+        become: yes
+        
+      - name: Add key GPG
+        apt_key:
+          url: https://download.docker.com/linux/ubuntu/gpg
+          state: present
+        become: yes
+      
+      - name: Add docker repository
+        apt_repository:
+          repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+          state: present
+        become: yes
+          
+      - name: Install docker
+        apt:
+          name: docker-ce
           state: present
         become: yes
 
-      - name: Copy artifacts
-        copy:
-          src: "{{ jar_path }}"
-          dest: /home/ubuntu/target
+      - name: Check docker is active
+        service:
+          name: docker
+          enabled: yes
+      
+      - name: Ensure group "docker" exists
+        ansible.builtin.group:
+          name: docker
+          state: present
+      
+      - name: Adding user ubuntu to docker group
+        user:
+          name: ubuntu
+          groups: docker
+          append: yes
+        become: yes
         
-      - name: Configure Java app service
-        copy: 
-          src: "{{ service_path }}"
-          dest: /etc/systemd/system
-          mode: '0777'
+      - name: Change docker socket permission
+        file:
+          path: /var/run/docker.sock
+          owner: ubuntu
+          group: docker
         become: yes
-    
-      - name: Start Java app service
-        systemd:
-          daemon_reload: true
-          name: chalkov_bot
+      
+      - name: Restart docker service
+        become: yes
+        service:
+          name: docker
           state: restarted
+          
+      - name: Copy tar to host
+        copy:
+          src:  taskmanager-java-jar.tar
+          dest: /home/ubuntu/project/
+          owner: ubuntu
+          group: docker
+          mode: 777
         become: yes
-     
+      
+      - name: Load container from tar
+        docker_image:
+          name: taskmanager-java-jar:latest
+          load_path: /home/ubuntu/project/taskmanager-java-jar.tar
+          state: present
+          source: load
+      
+      - name: Run docker container
+        docker_container:
+          name: taskmanager-app-container
+          image: taskmanager-java-jar:latest
+          state: started
+          restart_policy: always
+          ports:
+            - "8080:8080"
+        
       rescue:
        - name: Clean up resources because of an error
          terraform:
