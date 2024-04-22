@@ -18,8 +18,8 @@ provider "openstack" {
   region = "RegionOne"
 }
 
-resource "openstack_networking_secgroup_v2" "sg2" {
-  name        = "task_manager_sg2"
+resource "openstack_networking_secgroup_v2" "sg" {
+  name        = "task_manager_sg"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "sg_ssh_rule" {
@@ -29,7 +29,7 @@ resource "openstack_networking_secgroup_rule_v2" "sg_ssh_rule" {
   port_range_min    = 22
   port_range_max    = 22
   remote_ip_prefix  = "0.0.0.0/0"
-  security_group_id = openstack_networking_secgroup_v2.sg2.id
+  security_group_id = openstack_networking_secgroup_v2.sg.id
 }
 
 resource "openstack_networking_secgroup_rule_v2" "sg_sql_rule" {
@@ -39,15 +39,15 @@ resource "openstack_networking_secgroup_rule_v2" "sg_sql_rule" {
   port_range_min    = 3306
   port_range_max    = 3306
   remote_ip_prefix  = "0.0.0.0/0"
-  security_group_id = openstack_networking_secgroup_v2.sg2.id
+  security_group_id = openstack_networking_secgroup_v2.sg.id
 }
 
-resource "openstack_compute_instance_v2" "task_manager_tg2" {
-  name        = "task_manager_tg2"
+resource "openstack_compute_instance_v2" "task_manager_tg" {
+  name        = "task_manager_tg"
   image_name  = var.image_name
   flavor_name = var.flavor_name
   key_pair = var.key_pair
-  security_groups = [openstack_networking_secgroup_v2.sg2.name]
+  security_groups = [openstack_networking_secgroup_v2.sg.name]
 
   network {
     name = var.network_name
