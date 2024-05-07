@@ -163,6 +163,21 @@
           load_path: /home/ubuntu/project/taskmanager-java-jar.tar
           state: present
           source: load
+
+        - name: Run MySQL docker container
+        docker_container:
+          name: db-containter
+          image: mysql:5.7
+          volumes:
+            - "{{ db_volume }}:/var/lib/mysql:rw"
+          restart: true
+            env:
+              MYSQL_ROOT_PASSWORD: root
+              MYSQL_DATABASE: tmpdb
+              MYSQL_USER: finley
+              MYSQL_PASSWORD: password
+          ports:
+            - "3306:3306"
       
       - name: Run docker container
         docker_container:
