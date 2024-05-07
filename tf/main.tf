@@ -19,7 +19,7 @@ provider "openstack" {
 }
 
 resource "openstack_networking_secgroup_v2" "sg" {
-  name        = "task_manager_sg2"
+  name        = "task_manager_sg3"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "sg_ssh_rule" {
