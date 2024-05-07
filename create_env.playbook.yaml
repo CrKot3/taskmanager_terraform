@@ -13,7 +13,7 @@
       add_host:
         name: task_manager_server
         groups: nodes
-        ansible_host: "{{ trfrm.outputs.servers.value.tg_server3 }}"
+        ansible_host: "{{ trfrm.outputs.servers.value.tg_server }}"
         ansible_ssh_private_key_file: ~/.ssh/id_rsa
         ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
         
@@ -24,7 +24,7 @@
   tasks:
     - name: Wait for a ssh port become available
       wait_for:
-        host: "{{ trfrm.outputs.servers.value.tg_server3 }}"
+        host: "{{ trfrm.outputs.servers.value.tg_server }}"
         port: 22
 
 - hosts: task_manager_server
