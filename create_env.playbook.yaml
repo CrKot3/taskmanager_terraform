@@ -169,7 +169,7 @@
           name: db-containter
           image: mysql:5.7
           volumes:
-            - "{{ db_volume }}:/var/lib/mysql:rw"
+            - "mariadb-data:/var/lib/mysql:rw"
           restart: true
             env:
               MYSQL_ROOT_PASSWORD: root
