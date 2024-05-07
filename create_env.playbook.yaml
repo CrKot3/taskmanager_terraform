@@ -84,7 +84,71 @@
         service:
           name: docker
           state: restarted
-          
+
+      - name: Start mysql server
+  become: yes
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install MySQL server
+      apt:
+        name: mysql-server-8.0
+        state: present
+
+    - name: Install python3-pip
+      apt:
+        name: python3-pip
+        state: present
+
+    - name: Install PyMySQL using pip
+      pip:
+        name: pymysql
+        state: present
+        executable: pip3
+
+    - name: Change server configuration
+      ansible.builtin.lineinfile:
+        path: /etc/mysql/mysql.conf.d/mysqld.cnf
+        regexp: "^bind-address"
+        line: "bind-address = 0.0.0.0"
+
+    - name: Start MySQL service
+      service:
+        name: mysql
+        state: restarted
+        enabled: yes
+
+    - name: Install net-tools
+      apt:
+        name: net-tools
+        state: present
+
+    - name: Add user
+      mysql_user:
+        name: "finley"
+        password: "password"
+        priv: "tmpdb.*:ALL"
+        host: "%"  # Разрешить подключение с любого хоста
+        state: present
+        login_unix_socket: /run/mysqld/mysqld.sock
+
+    - name: Copy sql import script
+      copy:
+        src: "{{ sql_path  }}"
+        dest: /home/ubuntu
+
+    - name: Import database dump
+      mysql_db:
+        name: tmpdb
+        state: import
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        target: /home/ubuntu/BD.sql
+
+
+
+      
       - name: Copy tar to host
         copy:
           src:  taskmanager-java-jar.tar
