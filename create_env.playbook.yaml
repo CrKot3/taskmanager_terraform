@@ -152,7 +152,7 @@
           name: db-container2
           image: mysql:5.7
           volumes:
-            - "/home/ubuntu"
+            - /home/ubuntu/BD.sql:/docker-entrypoint-initdb.d/BD.sql
           restart: true
           env:
               MYSQL_ROOT_PASSWORD: root
