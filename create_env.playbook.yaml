@@ -150,7 +150,7 @@
               MYSQL_PASSWORD: password
           command: "sudo mysql -u root -p tmpdb < /home/ubuntu/BD.sql"
           ports:
-            - "3306:3306"
+            - "3305:3305"
       
       - name: Run docker container
         docker_container:
