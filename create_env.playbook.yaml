@@ -57,12 +57,6 @@
         regexp: "^bind-address"
         line: "bind-address = 0.0.0.0"
 
-    - name: Start MySQL service
-      service:
-        name: mysql
-        state: restarted
-        enabled: yes
-
     - name: Install net-tools
       apt:
         name: net-tools
