@@ -150,7 +150,7 @@
       - name: Run MySQL docker container
         docker_container:
           name: db-container2
-          image: mysql:5.7
+          image: mysql:8.0
           volumes:
             - /home/ubuntu/BD.sql:/docker-entrypoint-initdb.d/BD.sql
           restart: true
