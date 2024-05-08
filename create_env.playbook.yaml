@@ -149,7 +149,7 @@
 
       - name: Run MySQL docker container
         docker_container:
-          name: db-container
+          name: db-container2
           image: mysql:5.7
           volumes:
             - "/home/ubuntu"
