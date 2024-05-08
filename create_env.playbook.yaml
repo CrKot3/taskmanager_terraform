@@ -164,7 +164,7 @@
           state: present
           source: load
 
-        - name: Run MySQL docker container
+      - name: Run MySQL docker container
         docker_container:
           name: db-containter
           image: mysql:5.7
