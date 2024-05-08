@@ -160,7 +160,7 @@
               MYSQL_USER: finley
               MYSQL_PASSWORD: password
           ports:
-            - "3305:3305"
+            - "3306:3306"
       
       - name: Run docker container
         docker_container:
